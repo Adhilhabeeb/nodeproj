@@ -16,7 +16,7 @@ var db = mysql.createConnection({
 
     password: "",
 
-    database: "ujwal",
+    database: "adhil",
     port: 3306
 
 });
@@ -139,10 +139,49 @@ console.log("ok upfsdsd");
         }
     });
 });
+
+app.get('/gotoedit', (req, res) => {
+    res.render('views/edituserpage')
+})
+app.post('/edituser', (req, res) => {
+    console.log(req.body, "edit user request");
+
+    const { txtname, txtaddress, txtemail, txtpwd } = req.body;
+
+   
+    if (!txtemail) {
+        return res.send("email is required to update user.");
+    }
+
+
+    let updates = [];
+    if (txtaddress) updates.push(`address = '${txtaddress}'`);
+    if (txtname) updates.push(`name = '${txtname}'`);
+    if (txtpwd) updates.push(`password = '${txtpwd}'`);
+
+    
+    if (updates.length === 0) {
+        return res.send("No fields to update.");
+    }
+
+    const sql = `UPDATE users SET ${updates.join(', ')} WHERE email = '${txtemail}'`;
+console.log(sql,"ithann  query")
+    db.query(sql, function (err, data) {
+        if (err) {
+            throw err;
+        } else {
+            console.log("User updated");
+           
+             res.render('views/user',{ username: txtname,emailid:txtemail })
+        }
+    });
+});
+
 app.post('/login',(req,res)=>{
 
-console.log(req.body)
-let {txtname,txtpwd}=req.body
+// console.log(req.body,"requestdatabody")
+let {txtname,txtpwd,txtemail}=req.body
+console.log(txtemail,"textemmiiklllllllll")
 if (txtname=="admin" && txtpwd=="admin") {
 res.render('views/admin')
 
@@ -151,10 +190,13 @@ res.render('views/admin')
     
 }
 
- let query = `
+
+
+let query = `
 SELECT * FROM users 
-WHERE name = "${txtname}"
+WHERE name = "${txtname}" AND password = "${txtpwd}"
 `;
+
 
 db.query(query,function(err,data){
     if(err){

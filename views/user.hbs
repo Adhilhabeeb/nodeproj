@@ -6,6 +6,16 @@
     <title>Document</title>
 </head>
 <body>
-  <h1>Welcome, {{username}}!</h1>
+    <a href="/logout"> <button>
+        logout
+    </button></a>
+  <h1>
+
+  Welcome, {{username}} 
+  {{#if emailid}} and your email {{emailid}}{{/if}}
+</h1>
+
+
+  <a href="/gotoedit">edit your profile</a>
 </body>
 </html>
